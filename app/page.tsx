@@ -288,21 +288,6 @@ export default function Home() {
         )}
       </div>
 
-      {/* Instruction card */}
-      <div className="mb-6 p-4 bg-card text-card-foreground border rounded-lg shadow-sm">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-            <Check className="h-4 w-4 text-primary" />
-          </div>
-          <div>
-            <h3 className="text-sm font-medium">Modo de estudo</h3>
-            <p className="text-sm text-muted-foreground">
-              Selecione uma alternativa e clique em "Verificar" para testar seus conhecimentos.
-            </p>
-          </div>
-        </div>
-      </div>
-
       {/* Loading state */}
       {loading && (
         <div className="flex justify-center items-center py-12">
@@ -371,8 +356,12 @@ export default function Home() {
                             {isSelected && <span className="text-xs font-bold">✓</span>}
                           </div>
                           <div className="flex-1">
-                            <span className="font-medium">{alternative.letter}) </span>
-                            <MarkdownContent content={alternative.text} />
+                            <div className="flex">
+                              <span className="font-medium w-6 shrink-0">{alternative.letter}) </span>
+                              <div className="flex-1">
+                                <MarkdownContent content={alternative.text} />
+                              </div>
+                            </div>
                           </div>
                           {isCorrectAfterCheck && (
                             <Check className="h-4 w-4 text-green-600 dark:text-green-400 shrink-0" />
