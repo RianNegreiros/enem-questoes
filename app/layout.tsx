@@ -59,7 +59,7 @@ export default function RootLayout({
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <meta name="google-site-verification" content="sua-verificacao-do-google-aqui" />
+        <meta name="google-site-verification" content="lluNRXiTqwh48wzCKzI0aKOYP26U4-XluU2mMElAc6Y" />
       </head>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
