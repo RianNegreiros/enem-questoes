@@ -243,6 +243,21 @@ export default function Home() {
           <p className="text-muted-foreground mb-3">
             Explore questões de edições anteriores do Exame Nacional do Ensino Médio
           </p>
+
+
+          <div className="mt-2 text-xs text-muted-foreground max-w-md mx-auto">
+            <details className="group">
+              <summary className="cursor-pointer flex items-center justify-center gap-1 underline-offset-2 decoration-dotted underline hover:text-foreground/90 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-open:rotate-90 transition-transform"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                Informação sobre funcionalidades limitadas
+              </summary>
+              <div className="pt-2 pb-1 px-4 mt-1 rounded-md bg-background/50 border text-left">
+                <p className="mb-1.5">
+                  Atualmente a filtragem por disciplina não está disponível devido às limitações da <a href="https://docs.enem.dev/api-reference" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground/80 transition-colors">API do ENEM</a>. Apenas a filtragem por ano é suportada.
+                </p>
+              </div>
+            </details>
+          </div>
         </div>
 
         {/* Filtro por ano */}
