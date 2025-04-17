@@ -3,6 +3,9 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { KindeProvider } from "@/components/kinde-provider"
+import { Navbar } from "@/components/navbar"
+import { UserHistoryProvider } from "@/context/user-history-context"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -62,9 +65,18 @@ export default function RootLayout({
         <meta name="google-site-verification" content="lluNRXiTqwh48wzCKzI0aKOYP26U4-XluU2mMElAc6Y" />
       </head>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          {children}
-        </ThemeProvider>
+        <KindeProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <UserHistoryProvider>
+              <div className="flex flex-col min-h-screen">
+                <Navbar />
+                <main className="flex-1">
+                  {children}
+                </main>
+              </div>
+            </UserHistoryProvider>
+          </ThemeProvider>
+        </KindeProvider>
       </body>
     </html>
   )
