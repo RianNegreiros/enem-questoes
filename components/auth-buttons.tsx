@@ -58,7 +58,7 @@ export function UserButton() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/historico" className="flex items-center gap-2">
+          <Link href="/history" className="flex items-center gap-2">
             <History className="h-4 w-4" />
             <span>Histórico</span>
           </Link>
