@@ -8,8 +8,7 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Questões do ENEM",
-  description: "Explore questões de edições anteriores do Exame Nacional do Ensino Médio",
-  generator: 'v0.dev'
+  description: "Explore questões de edições anteriores do Exame Nacional do Ensino Médio"
 }
 
 export default function RootLayout({
@@ -20,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           {children}
         </ThemeProvider>
       </body>
