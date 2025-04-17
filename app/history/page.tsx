@@ -4,11 +4,12 @@ import { useUserHistory } from "@/context/user-history-context";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, CheckCircle, XCircle, Filter } from "lucide-react";
+import { Calendar, CheckCircle, XCircle, Filter, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import Link from "next/link";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 type FilterType = "all" | "correct" | "incorrect";
 
@@ -132,6 +133,16 @@ export default function HistoryPage() {
           )}
         </div>
       </div>
+
+      <Alert variant="warning" className="mb-6">
+        <AlertTriangle className="h-4 w-4" />
+        <AlertTitle>Atenção</AlertTitle>
+        <AlertDescription>
+          Seu histórico é armazenado localmente no navegador. Se você limpar os dados do navegador
+          ou acessar de outro dispositivo, seu histórico não estará disponível.
+          Recomendamos não depender desses dados para armazenamento permanente.
+        </AlertDescription>
+      </Alert>
 
       {history.length === 0 ? (
         <Card>
