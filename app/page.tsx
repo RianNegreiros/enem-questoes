@@ -244,16 +244,21 @@ export default function Home() {
             Explore questões de edições anteriores do Exame Nacional do Ensino Médio
           </p>
 
-
           <div className="mt-2 text-xs text-muted-foreground max-w-md mx-auto">
             <details className="group">
               <summary className="cursor-pointer flex items-center justify-center gap-1 underline-offset-2 decoration-dotted underline hover:text-foreground/90 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-open:rotate-90 transition-transform"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                Informação sobre funcionalidades limitadas
+                Informações sobre a API e limitações
               </summary>
               <div className="pt-2 pb-1 px-4 mt-1 rounded-md bg-background/50 border text-left">
                 <p className="mb-1.5">
                   Atualmente a filtragem por disciplina não está disponível devido às limitações da <a href="https://docs.enem.dev/api-reference" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground/80 transition-colors">API do ENEM</a>. Apenas a filtragem por ano é suportada.
+                </p>
+                <p className="text-amber-700 dark:text-amber-400 mt-2 flex items-start gap-1.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                  <span>
+                    <strong>Importante:</strong> Esta aplicação utiliza uma API não-oficial desenvolvida e mantida pela comunidade (<a href="https://enem.dev" target="_blank" rel="noopener noreferrer" className="underline font-medium">enem.dev</a>), sem vínculos com o INEP ou o MEC.
+                  </span>
                 </p>
               </div>
             </details>
