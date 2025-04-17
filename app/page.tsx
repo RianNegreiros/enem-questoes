@@ -64,7 +64,7 @@ const MarkdownContent = ({ content }: { content: string }) => {
 export default function Home() {
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  const { addToHistory } = useUserHistory();
+  const { history, addToHistory } = useUserHistory();
 
   // Set default years - all years from 2009 to 2023 in descending order
   const defaultYears = [2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009];
@@ -244,6 +244,11 @@ export default function Home() {
     });
   };
 
+  // Format of questionId: `${year}-${index}`
+  const getAnswerHistory = (questionId: string) => {
+    return history.find(item => item.questionId === questionId);
+  };
+
   return (
     <div className="container mx-auto py-8">
       <div className="mb-8">
@@ -335,12 +340,22 @@ export default function Home() {
           {questions.length > 0 ? questions.map((question) => {
             const questionId = `${question.year}-${question.index}`;
             const userAnswer = userAnswers[questionId];
+            const answerHistory = getAnswerHistory(questionId);
 
             return (
-              <Card key={questionId} className="h-full">
+              <Card key={questionId} className={`h-full ${answerHistory ?
+                answerHistory.isCorrect ? 'border-l-4 border-l-green-500' : 'border-l-4 border-l-red-500'
+                : ''}`}>
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-start">
-                    <CardTitle className="text-lg">{question.discipline || "Disciplina não especificada"}</CardTitle>
+                    <div className="flex items-center gap-2">
+                      <CardTitle className="text-lg">{question.discipline || "Disciplina não especificada"}</CardTitle>
+                      {answerHistory && (
+                        <Badge variant={answerHistory.isCorrect ? "success" : "destructive"} className="text-xs">
+                          {answerHistory.isCorrect ? "Acertou" : "Errou"}
+                        </Badge>
+                      )}
+                    </div>
                     <Badge variant="outline" className="flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
                       {question.year}
@@ -376,6 +391,10 @@ export default function Home() {
                       const isCorrectAfterCheck = userAnswer?.isChecked && alternative.isCorrect;
                       const isIncorrectSelection = userAnswer?.isChecked && isSelected && !alternative.isCorrect;
 
+                      // Highlight if this was the previous answer
+                      const isPreviouslyAnswered = answerHistory && alternative.letter === answerHistory.selectedAnswer;
+                      const isPreviouslyCorrect = isPreviouslyAnswered && answerHistory.isCorrect;
+
                       return (
                         <div
                           key={alternative.letter}
@@ -383,6 +402,7 @@ export default function Home() {
                             ${isSelected ? 'bg-primary/10' : 'hover:bg-muted'}
                             ${isCorrectAfterCheck ? 'bg-green-100 dark:bg-green-900/30' : ''}
                             ${isIncorrectSelection ? 'bg-red-100 dark:bg-red-900/30' : ''}
+                            ${isPreviouslyAnswered && !userAnswer ? (isPreviouslyCorrect ? 'bg-green-50 dark:bg-green-900/10' : 'bg-red-50 dark:bg-red-900/10') : ''}
                           `}
                           onClick={() => !userAnswer?.isChecked && handleAnswerSelect(questionId, alternative.letter)}
                         >
@@ -430,7 +450,13 @@ export default function Home() {
                   ) : (
                     <>
                       <div className="text-xs text-muted-foreground">
-                        {userAnswer ? 'Clique em verificar para conferir sua resposta' : 'Selecione uma alternativa'}
+                        {userAnswer ? 'Clique em verificar para conferir sua resposta' : (
+                          answerHistory ? (
+                            answerHistory.isCorrect ?
+                              'Você acertou esta questão anteriormente' :
+                              'Você errou esta questão anteriormente'
+                          ) : 'Selecione uma alternativa'
+                        )}
                       </div>
                       <Button
                         variant="outline"
@@ -447,7 +473,9 @@ export default function Home() {
             );
           }) : (
             <div className="col-span-2 text-center py-12">
-              <p className="text-muted-foreground">Nenhuma questão encontrada para o ano {selectedYear}.</p>
+              <p className="text-muted-foreground">
+                Nenhuma questão encontrada para o ano {selectedYear}.
+              </p>
             </div>
           )}
         </div>
