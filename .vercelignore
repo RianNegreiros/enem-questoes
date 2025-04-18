@@ -1,0 +1,28 @@
+# Dependencies
+node_modules
+
+# Testing
+coverage
+.nyc_output
+
+# Development/Build artifacts
+.next
+out
+build
+dist
+
+# Environment and configuration
+.env*.local
+.env.development
+.env.test
+
+# Source control
+.git
+.github
+.gitignore
+
+# Documentation and development files
+README.md
+LICENSE
+TODO.md
+*.md 
