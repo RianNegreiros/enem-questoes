@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { KindeProvider } from "@/components/kinde-provider"
 import { Navbar } from "@/components/navbar"
 import { UserHistoryProvider } from "@/context/user-history-context"
+import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -77,6 +78,7 @@ export default function RootLayout({
             </UserHistoryProvider>
           </ThemeProvider>
         </KindeProvider>
+        <Analytics />
       </body>
     </html>
   )

@@ -2,7 +2,7 @@
 
 ## Armazenamento de Dados
 
-- [ ] **Migrar histórico para banco de dados Neon (PostgreSQL)**
+- [x] **Migrar histórico para banco de dados Neon (PostgreSQL)**
 
 ## Funcionalidades de Usuário
 

@@ -17,76 +17,84 @@ interface AnswerHistory {
 
 interface UserHistoryContextType {
   history: AnswerHistory[];
-  addToHistory: (answer: Omit<AnswerHistory, "answeredAt">) => void;
-  clearHistory: () => void;
+  loading: boolean;
+  addToHistory: (answer: Omit<AnswerHistory, "answeredAt">) => Promise<void>;
+  clearHistory: () => Promise<void>;
 }
 
 const UserHistoryContext = createContext<UserHistoryContextType | undefined>(undefined);
 
 export function UserHistoryProvider({ children }: { children: React.ReactNode }) {
-  const { user } = useKindeBrowserClient();
+  const { user, isLoading } = useKindeBrowserClient();
   const [history, setHistory] = useState<AnswerHistory[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  // Load history from localStorage when component mounts and when user changes
+  // Load history from API when user logs in
   useEffect(() => {
-    if (user) {
-      const userId = user.id || user.email;
-      const storedHistory = localStorage.getItem(`userAnswerHistory-${userId}`);
-      if (storedHistory) {
-        try {
-          setHistory(JSON.parse(storedHistory));
-        } catch (e) {
-          console.error("Failed to parse stored history:", e);
-          setHistory([]);
-        }
+    async function fetchHistory() {
+      if (!user || isLoading) return;
+
+      setLoading(true);
+      try {
+        const response = await fetch('/api/history');
+        if (!response.ok) throw new Error('Failed to fetch history');
+
+        const data = await response.json();
+        setHistory(data.history || []);
+      } catch (error) {
+        console.error('Error fetching history:', error);
+        setHistory([]);
+      } finally {
+        setLoading(false);
       }
-    } else {
-      // Clear history when user logs out
-      setHistory([]);
     }
-  }, [user]);
 
-  // Save history to localStorage whenever it changes
-  useEffect(() => {
-    if (user && history.length > 0) {
-      const userId = user.id || user.email;
-      localStorage.setItem(`userAnswerHistory-${userId}`, JSON.stringify(history));
-    }
-  }, [history, user]);
+    fetchHistory();
+  }, [user, isLoading]);
 
-  const addToHistory = (answer: Omit<AnswerHistory, "answeredAt">) => {
+  const addToHistory = async (answer: Omit<AnswerHistory, "answeredAt">) => {
     if (!user) return; // Only save history for logged-in users
 
-    setHistory(prev => {
-      // Check if this question has been answered before
-      const existingIndex = prev.findIndex(item => item.questionId === answer.questionId);
-      const newAnswer = {
-        ...answer,
-        answeredAt: new Date().toISOString()
-      };
+    try {
+      const response = await fetch('/api/history/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(answer)
+      });
 
-      if (existingIndex >= 0) {
-        // Replace the existing answer
-        const updated = [...prev];
-        updated[existingIndex] = newAnswer;
-        return updated;
-      } else {
-        // Add new answer
-        return [...prev, newAnswer];
-      }
-    });
+      if (!response.ok) throw new Error('Failed to add to history');
+
+      // Refresh history after adding
+      const historyResponse = await fetch('/api/history');
+      if (!historyResponse.ok) throw new Error('Failed to refresh history');
+
+      const data = await historyResponse.json();
+      setHistory(data.history || []);
+    } catch (error) {
+      console.error('Error adding to history:', error);
+    }
   };
 
-  const clearHistory = () => {
+  const clearHistory = async () => {
     if (!user) return;
 
-    setHistory([]);
-    const userId = user.id || user.email;
-    localStorage.removeItem(`userAnswerHistory-${userId}`);
+    try {
+      const response = await fetch('/api/history', {
+        method: 'DELETE'
+      });
+
+      if (!response.ok) throw new Error('Failed to clear history');
+
+      setHistory([]);
+    } catch (error) {
+      console.error('Error clearing history:', error);
+    }
   };
 
   return (
-    <UserHistoryContext.Provider value={{ history, addToHistory, clearHistory }}>
+    <UserHistoryContext.Provider value={{ history, loading, addToHistory, clearHistory }}>
       {children}
     </UserHistoryContext.Provider>
   );

@@ -14,6 +14,7 @@ import 'katex/dist/katex.min.css'
 import { StructuredData, getEducationalAppStructuredData, getWebsiteStructuredData } from "@/components/seo"
 import { AuthCTA } from "@/components/auth-cta"
 import { useUserHistory } from "@/context/user-history-context"
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs"
 
 // Define types for the API responses
 interface QuestionAlternative {
@@ -65,6 +66,7 @@ export default function Home() {
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   const { history, addToHistory } = useUserHistory();
+  const { user } = useKindeBrowserClient();
 
   // Set default years - all years from 2009 to 2023 in descending order
   const defaultYears = [2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009];
@@ -76,6 +78,7 @@ export default function Home() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalQuestions, setTotalQuestions] = useState(0);
+  const [answerSaving, setAnswerSaving] = useState<{ [key: string]: boolean }>({});
 
   // Track user answers
   const [userAnswers, setUserAnswers] = useState<UserAnswers>({});
@@ -209,7 +212,7 @@ export default function Home() {
   };
 
   // Check if selected answer is correct
-  const checkAnswer = (questionId: string, correctAlternative: string, question: Question) => {
+  const checkAnswer = async (questionId: string, correctAlternative: string, question: Question) => {
     if (!userAnswers[questionId]) return;
 
     const isCorrect = userAnswers[questionId].selectedLetter === correctAlternative;
@@ -223,16 +226,26 @@ export default function Home() {
       }
     }));
 
-    // Save to history
-    addToHistory({
-      questionId,
-      year: question.year,
-      index: question.index,
-      discipline: question.discipline,
-      selectedAnswer: userAnswers[questionId].selectedLetter,
-      correctAnswer: correctAlternative,
-      isCorrect
-    });
+    // Save to history if user is logged in
+    if (user) {
+      setAnswerSaving(prev => ({ ...prev, [questionId]: true }));
+
+      try {
+        await addToHistory({
+          questionId,
+          year: question.year,
+          index: question.index,
+          discipline: question.discipline,
+          selectedAnswer: userAnswers[questionId].selectedLetter,
+          correctAnswer: correctAlternative,
+          isCorrect
+        });
+      } catch (error) {
+        console.error("Error saving answer history:", error);
+      } finally {
+        setAnswerSaving(prev => ({ ...prev, [questionId]: false }));
+      }
+    }
   };
 
   // Reset answer for a specific question
@@ -341,6 +354,7 @@ export default function Home() {
             const questionId = `${question.year}-${question.index}`;
             const userAnswer = userAnswers[questionId];
             const answerHistory = getAnswerHistory(questionId);
+            const isSaving = answerSaving[questionId];
 
             return (
               <Card key={questionId} className={`h-full ${answerHistory ?
@@ -461,10 +475,15 @@ export default function Home() {
                       <Button
                         variant="outline"
                         size="sm"
-                        disabled={!userAnswer}
+                        disabled={!userAnswer || isSaving}
                         onClick={() => checkAnswer(questionId, question.correctAlternative, question)}
                       >
-                        Verificar
+                        {isSaving ? (
+                          <span className="flex items-center gap-2">
+                            <span className="h-3 w-3 rounded-full border-2 border-t-transparent border-current animate-spin"></span>
+                            Salvando...
+                          </span>
+                        ) : 'Verificar'}
                       </Button>
                     </>
                   )}
