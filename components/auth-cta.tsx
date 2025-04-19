@@ -1,13 +1,13 @@
-'use client';
+'use client'
 
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
-import { LoginButton, RegisterButton } from './auth-buttons';
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import { LoginButton, RegisterButton } from './auth-buttons'
 
 export function AuthCTA() {
-  const { user, isLoading } = useKindeBrowserClient();
+  const { user, isLoading } = useKindeBrowserClient()
 
   if (isLoading || user) {
-    return <></>;
+    return <></>
   }
 
   return (
@@ -25,5 +25,5 @@ export function AuthCTA() {
         </div>
       </div>
     </div>
-  );
+  )
 }

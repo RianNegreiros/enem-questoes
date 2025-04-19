@@ -1,12 +1,12 @@
-'use client';
+'use client'
 
 import {
   LoginLink,
   LogoutLink,
   RegisterLink,
   useKindeBrowserClient,
-} from '@kinde-oss/kinde-auth-nextjs';
-import { Button } from '@/components/ui/button';
+} from '@kinde-oss/kinde-auth-nextjs'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,17 +14,17 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Avatar } from '@/components/ui/avatar';
-import Link from 'next/link';
-import { History } from 'lucide-react';
+} from '@/components/ui/dropdown-menu'
+import { Avatar } from '@/components/ui/avatar'
+import Link from 'next/link'
+import { History } from 'lucide-react'
 
 export function LoginButton() {
   return (
     <LoginLink>
       <Button variant="outline">Entrar</Button>
     </LoginLink>
-  );
+  )
 }
 
 export function RegisterButton() {
@@ -32,14 +32,14 @@ export function RegisterButton() {
     <RegisterLink>
       <Button>Cadastrar</Button>
     </RegisterLink>
-  );
+  )
 }
 
 export function UserButton() {
-  const { user, isLoading } = useKindeBrowserClient();
+  const { user, isLoading } = useKindeBrowserClient()
 
   if (isLoading || !user) {
-    return null;
+    return null
   }
 
   return (
@@ -66,5 +66,5 @@ export function UserButton() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

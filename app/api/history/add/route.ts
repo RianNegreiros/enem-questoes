@@ -1,22 +1,22 @@
-import { PrismaClient } from '@prisma/client';
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
-import { NextRequest, NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 // Inicializar cliente Prisma diretamente aqui em vez de importar
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 // POST - Add a new answer to user's history
 export async function POST(req: NextRequest) {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
+  const { getUser } = getKindeServerSession()
+  const user = await getUser()
 
   if (!user || !user.id) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   try {
     const { questionId, year, index, discipline, selectedAnswer, correctAnswer, isCorrect } =
-      await req.json();
+      await req.json()
 
     // Make sure the required fields are provided
     if (
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
       !year ||
       !index
     ) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
     // Check if user exists, if not create a new user record
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
         familyName: user.family_name,
         picture: user.picture,
       },
-    });
+    })
 
     // Create or update answer history
     const result = await prisma.answerHistory.upsert({
@@ -67,11 +67,11 @@ export async function POST(req: NextRequest) {
         isCorrect,
         userId: user.id,
       },
-    });
+    })
 
-    return NextResponse.json({ success: true, data: result });
+    return NextResponse.json({ success: true, data: result })
   } catch (error) {
-    console.error('Error adding to history:', error);
-    return NextResponse.json({ error: 'Failed to add to history' }, { status: 500 });
+    console.error('Error adding to history:', error)
+    return NextResponse.json({ error: 'Failed to add to history' }, { status: 500 })
   }
 }

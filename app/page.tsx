@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import {
   Card,
   CardContent,
@@ -8,59 +8,59 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/components/ui/card'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Calendar, Filter, Check, X } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
-import rehypeKatex from 'rehype-katex';
-import 'katex/dist/katex.min.css';
+} from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Calendar, Filter, Check, X } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import 'katex/dist/katex.min.css'
 import {
   StructuredData,
   getEducationalAppStructuredData,
   getWebsiteStructuredData,
-} from '@/components/seo';
-import { AuthCTA } from '@/components/auth-cta';
-import { useUserHistory } from '@/context/user-history-context';
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
+} from '@/components/seo'
+import { AuthCTA } from '@/components/auth-cta'
+import { useUserHistory } from '@/context/user-history-context'
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 
 // Define types for the API responses
 interface QuestionAlternative {
-  letter: string;
-  text: string;
-  file?: string;
-  isCorrect: boolean;
+  letter: string
+  text: string
+  file?: string
+  isCorrect: boolean
 }
 
 interface Question {
-  title: string;
-  index: number;
-  discipline?: string;
-  language?: string;
-  year: number;
-  context?: string;
-  files?: string[];
-  correctAlternative: string;
-  alternativesIntroduction?: string;
-  alternatives: QuestionAlternative[];
+  title: string
+  index: number
+  discipline?: string
+  language?: string
+  year: number
+  context?: string
+  files?: string[]
+  correctAlternative: string
+  alternativesIntroduction?: string
+  alternatives: QuestionAlternative[]
 }
 
 // Type for tracking user answers
 interface UserAnswers {
   [questionId: string]: {
-    selectedLetter: string;
-    isChecked: boolean;
-    isCorrect: boolean;
-  };
+    selectedLetter: string
+    isChecked: boolean
+    isCorrect: boolean
+  }
 }
 
 // Component for rendering markdown content with proper styling
@@ -78,166 +78,166 @@ const MarkdownContent = ({ content }: { content: string }) => {
     >
       {content}
     </ReactMarkdown>
-  );
-};
+  )
+}
 
 export default function Home() {
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-  const { history, addToHistory } = useUserHistory();
-  const { user } = useKindeBrowserClient();
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+  const { history, addToHistory } = useUserHistory()
+  const { user } = useKindeBrowserClient()
 
   // State for responsive pagination
-  const [maxVisiblePages, setMaxVisiblePages] = useState(5);
+  const [maxVisiblePages, setMaxVisiblePages] = useState(5)
 
   // Set default years - all years from 2009 to 2023 in descending order
   const defaultYears = [
     2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009,
-  ];
-  const [availableYears, setAvailableYears] = useState<number[]>(defaultYears);
+  ]
+  const [availableYears, setAvailableYears] = useState<number[]>(defaultYears)
 
   // Initialize with the first year in the list
-  const [selectedYear, setSelectedYear] = useState<string>(defaultYears[0].toString());
-  const [currentPage, setCurrentPage] = useState(1);
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [totalQuestions, setTotalQuestions] = useState(0);
-  const [answerSaving, setAnswerSaving] = useState<{ [key: string]: boolean }>({});
+  const [selectedYear, setSelectedYear] = useState<string>(defaultYears[0].toString())
+  const [currentPage, setCurrentPage] = useState(1)
+  const [questions, setQuestions] = useState<Question[]>([])
+  const [loading, setLoading] = useState(true)
+  const [totalQuestions, setTotalQuestions] = useState(0)
+  const [answerSaving, setAnswerSaving] = useState<{ [key: string]: boolean }>({})
 
   // Track user answers
-  const [userAnswers, setUserAnswers] = useState<UserAnswers>({});
+  const [userAnswers, setUserAnswers] = useState<UserAnswers>({})
 
-  const questionsPerPage = 10;
+  const questionsPerPage = 10
 
   // Update max visible pages based on screen size
   useEffect(() => {
     const handleResize = () => {
-      setMaxVisiblePages(window.innerWidth < 640 ? 3 : 5);
-    };
+      setMaxVisiblePages(window.innerWidth < 640 ? 3 : 5)
+    }
 
     // Set initial value
-    handleResize();
+    handleResize()
 
     // Add event listener
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize)
 
     // Cleanup
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   // Fetch available years
   useEffect(() => {
     const fetchYears = async () => {
       try {
-        const response = await fetch(`${apiBaseUrl}/exams`);
+        const response = await fetch(`${apiBaseUrl}/exams`)
 
         // Check if the response is OK
         if (!response.ok) {
-          throw new Error(`API error: ${response.status}`);
+          throw new Error(`API error: ${response.status}`)
         }
 
         try {
-          const data = await response.json();
+          const data = await response.json()
 
           // Check if data has the expected structure
           if (data && Array.isArray(data)) {
             // If the API returns an array directly
-            const years = data.map((exam: any) => exam.year).filter(Boolean);
+            const years = data.map((exam: any) => exam.year).filter(Boolean)
             if (years.length > 0) {
-              const sortedYears = years.sort((a: number, b: number) => b - a);
-              setAvailableYears(sortedYears);
+              const sortedYears = years.sort((a: number, b: number) => b - a)
+              setAvailableYears(sortedYears)
               // Update selectedYear if it's not in the new list
               if (!sortedYears.includes(Number(selectedYear))) {
-                setSelectedYear(sortedYears[0].toString());
+                setSelectedYear(sortedYears[0].toString())
               }
             }
           } else if (data && data.exams && Array.isArray(data.exams)) {
             // If the API returns an object with exams array
-            const years = data.exams.map((exam: any) => exam.year).filter(Boolean);
+            const years = data.exams.map((exam: any) => exam.year).filter(Boolean)
             if (years.length > 0) {
-              const sortedYears = years.sort((a: number, b: number) => b - a);
-              setAvailableYears(sortedYears);
+              const sortedYears = years.sort((a: number, b: number) => b - a)
+              setAvailableYears(sortedYears)
               // Update selectedYear if it's not in the new list
               if (!sortedYears.includes(Number(selectedYear))) {
-                setSelectedYear(sortedYears[0].toString());
+                setSelectedYear(sortedYears[0].toString())
               }
             }
           }
         } catch (error) {
-          console.error('Failed to parse JSON:', error);
+          console.error('Failed to parse JSON:', error)
           // Keep using the default years
         }
       } catch (error) {
-        console.error('Failed to fetch years:', error);
+        console.error('Failed to fetch years:', error)
         // Keep using the default years
       }
-    };
+    }
 
-    fetchYears();
-  }, [selectedYear, apiBaseUrl]);
+    fetchYears()
+  }, [selectedYear, apiBaseUrl])
 
   // Fetch questions based on selected year and page
   useEffect(() => {
     const fetchQuestions = async () => {
-      setLoading(true);
+      setLoading(true)
       try {
-        const offset = (currentPage - 1) * questionsPerPage;
-        const apiUrl = `${apiBaseUrl}/exams/${selectedYear}/questions?limit=${questionsPerPage}&offset=${offset}`;
+        const offset = (currentPage - 1) * questionsPerPage
+        const apiUrl = `${apiBaseUrl}/exams/${selectedYear}/questions?limit=${questionsPerPage}&offset=${offset}`
 
-        const response = await fetch(apiUrl);
+        const response = await fetch(apiUrl)
 
         // Check if the response is OK
         if (!response.ok) {
-          throw new Error(`API error: ${response.status}`);
+          throw new Error(`API error: ${response.status}`)
         }
 
         try {
-          const data = await response.json();
+          const data = await response.json()
 
           // Handle different response structures
           if (data && Array.isArray(data)) {
             // If API returns array of questions directly
-            setQuestions(data);
-            setTotalQuestions(data.length);
+            setQuestions(data)
+            setTotalQuestions(data.length)
           } else if (data && data.questions && Array.isArray(data.questions)) {
             // If API returns object with questions array and metadata
-            setQuestions(data.questions);
-            setTotalQuestions(data.metadata?.total || data.questions.length);
+            setQuestions(data.questions)
+            setTotalQuestions(data.metadata?.total || data.questions.length)
           } else {
             // Fallback if structure is unexpected
-            console.error('Unexpected API response structure:', data);
-            setQuestions([]);
-            setTotalQuestions(0);
+            console.error('Unexpected API response structure:', data)
+            setQuestions([])
+            setTotalQuestions(0)
           }
         } catch (error) {
-          console.error('Failed to parse JSON:', error);
-          setQuestions([]);
-          setTotalQuestions(0);
+          console.error('Failed to parse JSON:', error)
+          setQuestions([])
+          setTotalQuestions(0)
         }
       } catch (error) {
-        console.error('Failed to fetch questions:', error);
-        setQuestions([]);
-        setTotalQuestions(0);
+        console.error('Failed to fetch questions:', error)
+        setQuestions([])
+        setTotalQuestions(0)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
     if (selectedYear) {
-      fetchQuestions();
+      fetchQuestions()
       // Reset user answers when changing page or year
-      setUserAnswers({});
+      setUserAnswers({})
     }
-  }, [selectedYear, currentPage, apiBaseUrl]);
+  }, [selectedYear, currentPage, apiBaseUrl])
 
   // Calculate the total pages
-  const totalPages = Math.ceil(totalQuestions / questionsPerPage);
+  const totalPages = Math.ceil(totalQuestions / questionsPerPage)
 
   // Function to change page
   const changePage = (page: number) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+    setCurrentPage(page)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   // Handle answer selection
   const handleAnswerSelect = (questionId: string, letter: string) => {
@@ -248,8 +248,8 @@ export default function Home() {
         isChecked: false,
         isCorrect: false,
       },
-    }));
-  };
+    }))
+  }
 
   // Check if selected answer is correct
   const checkAnswer = async (
@@ -257,9 +257,9 @@ export default function Home() {
     correctAlternative: string,
     question: Question
   ) => {
-    if (!userAnswers[questionId]) return;
+    if (!userAnswers[questionId]) return
 
-    const isCorrect = userAnswers[questionId].selectedLetter === correctAlternative;
+    const isCorrect = userAnswers[questionId].selectedLetter === correctAlternative
 
     setUserAnswers(prev => ({
       ...prev,
@@ -268,11 +268,11 @@ export default function Home() {
         isChecked: true,
         isCorrect,
       },
-    }));
+    }))
 
     // Save to history if user is logged in
     if (user) {
-      setAnswerSaving(prev => ({ ...prev, [questionId]: true }));
+      setAnswerSaving(prev => ({ ...prev, [questionId]: true }))
 
       try {
         await addToHistory({
@@ -283,28 +283,28 @@ export default function Home() {
           selectedAnswer: userAnswers[questionId].selectedLetter,
           correctAnswer: correctAlternative,
           isCorrect,
-        });
+        })
       } catch (error) {
-        console.error('Error saving answer history:', error);
+        console.error('Error saving answer history:', error)
       } finally {
-        setAnswerSaving(prev => ({ ...prev, [questionId]: false }));
+        setAnswerSaving(prev => ({ ...prev, [questionId]: false }))
       }
     }
-  };
+  }
 
   // Reset answer for a specific question
   const resetAnswer = (questionId: string) => {
     setUserAnswers(prev => {
-      const newAnswers = { ...prev };
-      delete newAnswers[questionId];
-      return newAnswers;
-    });
-  };
+      const newAnswers = { ...prev }
+      delete newAnswers[questionId]
+      return newAnswers
+    })
+  }
 
   // Format of questionId: `${year}-${index}`
   const getAnswerHistory = (questionId: string) => {
-    return history.find(item => item.questionId === questionId);
-  };
+    return history.find(item => item.questionId === questionId)
+  }
 
   return (
     <div className="container mx-auto px-4 sm:px-6 py-8">
@@ -332,8 +332,8 @@ export default function Home() {
             <Select
               value={selectedYear}
               onValueChange={value => {
-                setSelectedYear(value);
-                setCurrentPage(1);
+                setSelectedYear(value)
+                setCurrentPage(1)
               }}
             >
               <SelectTrigger className="w-full">
@@ -445,10 +445,10 @@ export default function Home() {
           <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
             {questions.length > 0 ? (
               questions.map(question => {
-                const questionId = `${question.year}-${question.index}`;
-                const userAnswer = userAnswers[questionId];
-                const answerHistory = getAnswerHistory(questionId);
-                const isSaving = answerSaving[questionId];
+                const questionId = `${question.year}-${question.index}`
+                const userAnswer = userAnswers[questionId]
+                const answerHistory = getAnswerHistory(questionId)
+                const isSaving = answerSaving[questionId]
 
                 return (
                   <Card
@@ -514,17 +514,17 @@ export default function Home() {
                         {question.alternatives &&
                           question.alternatives.map(alternative => {
                             // Determine the state of this alternative
-                            const isSelected = userAnswer?.selectedLetter === alternative.letter;
+                            const isSelected = userAnswer?.selectedLetter === alternative.letter
                             const isCorrectAfterCheck =
-                              userAnswer?.isChecked && alternative.isCorrect;
+                              userAnswer?.isChecked && alternative.isCorrect
                             const isIncorrectSelection =
-                              userAnswer?.isChecked && isSelected && !alternative.isCorrect;
+                              userAnswer?.isChecked && isSelected && !alternative.isCorrect
 
                             // Highlight if this was the previous answer
                             const isPreviouslyAnswered =
-                              answerHistory && alternative.letter === answerHistory.selectedAnswer;
+                              answerHistory && alternative.letter === answerHistory.selectedAnswer
                             const isPreviouslyCorrect =
-                              isPreviouslyAnswered && answerHistory.isCorrect;
+                              isPreviouslyAnswered && answerHistory.isCorrect
 
                             return (
                               <div
@@ -570,7 +570,7 @@ export default function Home() {
                                   />
                                 )}
                               </div>
-                            );
+                            )
                           })}
                       </div>
                     </CardContent>
@@ -625,7 +625,7 @@ export default function Home() {
                       )}
                     </CardFooter>
                   </Card>
-                );
+                )
               })
             ) : (
               <div className="col-span-2 text-center py-12">
@@ -651,16 +651,16 @@ export default function Home() {
 
             {Array.from({ length: Math.min(maxVisiblePages, totalPages) }, (_, i) => {
               // Lógica para mostrar páginas ao redor da página atual
-              let pageNum;
+              let pageNum
 
               if (totalPages <= maxVisiblePages) {
-                pageNum = i + 1;
+                pageNum = i + 1
               } else if (currentPage <= Math.ceil(maxVisiblePages / 2)) {
-                pageNum = i + 1;
+                pageNum = i + 1
               } else if (currentPage >= totalPages - Math.floor(maxVisiblePages / 2)) {
-                pageNum = totalPages - (maxVisiblePages - 1) + i;
+                pageNum = totalPages - (maxVisiblePages - 1) + i
               } else {
-                pageNum = currentPage - Math.floor(maxVisiblePages / 2) + i;
+                pageNum = currentPage - Math.floor(maxVisiblePages / 2) + i
               }
 
               return (
@@ -672,7 +672,7 @@ export default function Home() {
                 >
                   {pageNum}
                 </Button>
-              );
+              )
             })}
 
             <Button
@@ -687,5 +687,5 @@ export default function Home() {
         )}
       </div>
     </div>
-  );
+  )
 }

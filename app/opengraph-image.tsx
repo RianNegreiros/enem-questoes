@@ -1,12 +1,12 @@
-import { ImageResponse } from 'next/og';
+import { ImageResponse } from 'next/og'
 
 // Tamanho da imagem: 1200x630
 export const size = {
   width: 1200,
   height: 630,
-};
+}
 
-export const contentType = 'image/png';
+export const contentType = 'image/png'
 
 export default function Image() {
   return new ImageResponse(
@@ -58,5 +58,5 @@ export default function Image() {
       </div>
     ),
     { ...size }
-  );
+  )
 }

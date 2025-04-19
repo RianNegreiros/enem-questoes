@@ -1,16 +1,16 @@
-import type React from 'react';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-import { ThemeProvider } from '@/components/theme-provider';
-import { KindeProvider } from '@/components/kinde-provider';
-import { Navbar } from '@/components/navbar';
-import { UserHistoryProvider } from '@/context/user-history-context';
-import { Analytics } from '@vercel/analytics/react';
+import type React from 'react'
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+import { ThemeProvider } from '@/components/theme-provider'
+import { KindeProvider } from '@/components/kinde-provider'
+import { Navbar } from '@/components/navbar'
+import { UserHistoryProvider } from '@/context/user-history-context'
+import { Analytics } from '@vercel/analytics/react'
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'] })
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
 export const metadata: Metadata = {
   title: 'Questões do ENEM | Banco de Questões Gratuito e Ilimitado',
@@ -55,12 +55,12 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-};
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
@@ -91,5 +91,5 @@ export default function RootLayout({
         <Analytics />
       </body>
     </html>
-  );
+  )
 }

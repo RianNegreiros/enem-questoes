@@ -1,19 +1,19 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
-import { LoginButton, RegisterButton, UserButton } from './auth-buttons';
-import { ThemeToggle } from './theme-toggle';
-import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import Link from 'next/link'
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import { LoginButton, RegisterButton, UserButton } from './auth-buttons'
+import { ThemeToggle } from './theme-toggle'
+import { useState } from 'react'
+import { Menu, X } from 'lucide-react'
 
 export function Navbar() {
-  const { user, isLoading } = useKindeBrowserClient();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, isLoading } = useKindeBrowserClient()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+    setIsMenuOpen(!isMenuOpen)
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
@@ -83,5 +83,5 @@ export function Navbar() {
         </div>
       )}
     </header>
-  );
+  )
 }

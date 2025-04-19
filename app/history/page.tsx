@@ -1,8 +1,8 @@
-'use client';
+'use client'
 
-import { useUserHistory } from '@/context/user-history-context';
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
-import { Badge } from '@/components/ui/badge';
+import { useUserHistory } from '@/context/user-history-context'
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import { Badge } from '@/components/ui/badge'
 import {
   Card,
   CardContent,
@@ -10,58 +10,58 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Calendar, CheckCircle, XCircle, Filter } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useState } from 'react';
-import Link from 'next/link';
+} from '@/components/ui/card'
+import { Calendar, CheckCircle, XCircle, Filter } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useState } from 'react'
+import Link from 'next/link'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/components/ui/select'
 
-type FilterType = 'all' | 'correct' | 'incorrect';
+type FilterType = 'all' | 'correct' | 'incorrect'
 
 export default function HistoryPage() {
-  const { user, isLoading: isUserLoading } = useKindeBrowserClient();
-  const { history, loading: historyLoading, clearHistory } = useUserHistory();
-  const [isConfirmingClear, setIsConfirmingClear] = useState(false);
-  const [filter, setFilter] = useState<FilterType>('all');
+  const { user, isLoading: isUserLoading } = useKindeBrowserClient()
+  const { history, loading: historyLoading, clearHistory } = useUserHistory()
+  const [isConfirmingClear, setIsConfirmingClear] = useState(false)
+  const [filter, setFilter] = useState<FilterType>('all')
 
   // Apply filter to history
   const filteredHistory = history.filter(item => {
-    if (filter === 'all') return true;
-    if (filter === 'correct') return item.isCorrect;
-    if (filter === 'incorrect') return !item.isCorrect;
-    return true;
-  });
+    if (filter === 'all') return true
+    if (filter === 'correct') return item.isCorrect
+    if (filter === 'incorrect') return !item.isCorrect
+    return true
+  })
 
   // Group history by year
   const groupedByYear = filteredHistory.reduce<Record<number, typeof filteredHistory>>(
     (acc, item) => {
       if (!acc[item.year]) {
-        acc[item.year] = [];
+        acc[item.year] = []
       }
-      acc[item.year].push(item);
-      return acc;
+      acc[item.year].push(item)
+      return acc
     },
     {}
-  );
+  )
 
   // Sort years in descending order
   const years = Object.keys(groupedByYear)
     .map(Number)
-    .sort((a, b) => b - a);
+    .sort((a, b) => b - a)
 
   // Get stats
-  const totalAnswered = history.length;
-  const correctAnswers = history.filter(item => item.isCorrect).length;
-  const incorrectAnswers = history.filter(item => !item.isCorrect).length;
+  const totalAnswered = history.length
+  const correctAnswers = history.filter(item => item.isCorrect).length
+  const incorrectAnswers = history.filter(item => !item.isCorrect).length
   const correctPercentage =
-    totalAnswered > 0 ? Math.round((correctAnswers / totalAnswered) * 100) : 0;
+    totalAnswered > 0 ? Math.round((correctAnswers / totalAnswered) * 100) : 0
 
   if (isUserLoading || historyLoading) {
     return (
@@ -70,7 +70,7 @@ export default function HistoryPage() {
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
         </div>
       </div>
-    );
+    )
   }
 
   if (!user) {
@@ -91,7 +91,7 @@ export default function HistoryPage() {
           </CardFooter>
         </Card>
       </div>
-    );
+    )
   }
 
   return (
@@ -131,8 +131,8 @@ export default function HistoryPage() {
                   <Button
                     variant="destructive"
                     onClick={() => {
-                      clearHistory();
-                      setIsConfirmingClear(false);
+                      clearHistory()
+                      setIsConfirmingClear(false)
                     }}
                   >
                     Confirmar Exclusão
@@ -277,5 +277,5 @@ export default function HistoryPage() {
         </>
       )}
     </div>
-  );
+  )
 }

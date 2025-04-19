@@ -1,18 +1,18 @@
-import { withAuth } from "@kinde-oss/kinde-auth-nextjs/middleware";
-import { NextRequest, NextResponse } from "next/server";
+import { withAuth } from '@kinde-oss/kinde-auth-nextjs/middleware'
+import { NextRequest, NextResponse } from 'next/server'
 
 export default function middleware(req: NextRequest) {
-  const publicPaths = ["/", "/api/(.*)"];
-  const isPublicPath = publicPaths.some((path) => {
-    if (path === "/") return req.nextUrl.pathname === "/";
-    return new RegExp(`^${path}$`).test(req.nextUrl.pathname);
-  });
+  const publicPaths = ['/', '/api/(.*)']
+  const isPublicPath = publicPaths.some(path => {
+    if (path === '/') return req.nextUrl.pathname === '/'
+    return new RegExp(`^${path}$`).test(req.nextUrl.pathname)
+  })
 
   if (isPublicPath) {
-    return NextResponse.next();
+    return NextResponse.next()
   }
 
-  return withAuth(req);
+  return withAuth(req)
 }
 
 export const config = {
@@ -25,6 +25,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * - public directory
      */
-    "/((?!api/auth|_next/static|_next/image|favicon.ico|public).*)",
+    '/((?!api/auth|_next/static|_next/image|favicon.ico|public).*)',
   ],
-}; 
+}

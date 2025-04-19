@@ -1,8 +1,8 @@
-import Script from 'next/script';
+import Script from 'next/script'
 
 interface StructuredDataProps {
-  data: Record<string, any>;
-  id?: string;
+  data: Record<string, any>
+  id?: string
 }
 
 export function StructuredData({ data, id = 'schema-org' }: StructuredDataProps) {
@@ -12,7 +12,7 @@ export function StructuredData({ data, id = 'schema-org' }: StructuredDataProps)
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
     />
-  );
+  )
 }
 
 // Exporta os dados estruturados pré-configurados para facilitar o uso
@@ -36,7 +36,7 @@ export function getWebsiteStructuredData(
       },
       'query-input': 'required name=search_term_string',
     },
-  };
+  }
 }
 
 export function getEducationalAppStructuredData(
@@ -79,5 +79,5 @@ export function getEducationalAppStructuredData(
       url: url,
       slogan: 'Banco de questões 100% grátis e sem limites',
     },
-  };
+  }
 }
