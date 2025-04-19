@@ -271,6 +271,20 @@ export default function Home() {
         </p>
       </div>
 
+      <div className="mb-8 p-4 bg-gradient-to-r from-green-100 to-blue-100 dark:from-green-900/30 dark:to-blue-900/30 rounded-lg border border-green-200 dark:border-green-900 shadow-sm">
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600 dark:text-green-400">
+            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+            <path d="m9 12 2 2 4-4"></path>
+          </svg>
+          <h2 className="text-xl font-bold text-green-700 dark:text-green-400">100% GRATUITO e ILIMITADO</h2>
+        </div>
+        <p className="text-center text-green-800 dark:text-green-300">
+          Estude com nosso banco de questões <strong>totalmente grátis</strong> e <strong>sem restrições</strong>.
+          Sem limites de uso, sem pagamentos e sem necessidade de cadastro.
+        </p>
+      </div>
+
       <AuthCTA />
 
       <StructuredData data={getEducationalAppStructuredData(appUrl)} id="educational-app-data" />

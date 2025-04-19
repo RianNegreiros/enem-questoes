@@ -10,13 +10,12 @@ import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ["latin"] })
 
-// Valor de fallback válido para a URL base
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
 export const metadata: Metadata = {
-  title: "Questões do ENEM | Estude com Provas Anteriores",
-  description: "Pratique com questões de provas anteriores do ENEM (Exame Nacional do Ensino Médio). Estude online, teste seus conhecimentos e prepare-se para obter a melhor nota no vestibular.",
-  keywords: "ENEM, vestibular, questões ENEM, provas anteriores, estudo ENEM, simulado ENEM, exercícios ENEM, preparação vestibular, questões resolvidas",
+  title: "Questões do ENEM | Banco de Questões Gratuito e Ilimitado",
+  description: "Acesse milhares de questões do ENEM totalmente GRÁTIS e sem limite de uso. Banco completo de questões de provas anteriores do ENEM para estudar online sem pagar nada.",
+  keywords: "ENEM, vestibular, questões ENEM, provas anteriores, estudo ENEM, simulado ENEM, exercícios ENEM, preparação vestibular, questões resolvidas, banco de questões grátis, ENEM gratuito, exercícios grátis, questões ilimitadas, estudo gratuito, sem pagar",
   authors: [{ name: "Questões ENEM" }],
   creator: "Questões ENEM",
   publisher: "Questões ENEM",
@@ -30,8 +29,8 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Questões do ENEM | Estude com Provas Anteriores",
-    description: "Pratique com questões de provas anteriores do ENEM (Exame Nacional do Ensino Médio). Estude online, teste seus conhecimentos e prepare-se.",
+    title: "Questões do ENEM | Banco de Questões 100% Gratuito e Ilimitado",
+    description: "Acesse questões de provas anteriores do ENEM totalmente GRÁTIS e sem limite de uso. Estude online sem pagar nada, sem restrições e sem cadastro obrigatório.",
     url: "/",
     siteName: "Questões ENEM",
     locale: "pt_BR",
@@ -39,8 +38,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Questões do ENEM | Estude com Provas Anteriores",
-    description: "Pratique com questões de provas anteriores do ENEM (Exame Nacional do Ensino Médio).",
+    title: "Questões do ENEM | Banco de Questões 100% Gratuito e Ilimitado",
+    description: "Acesse questões do ENEM totalmente grátis e sem limite de uso. Estude sem pagar nada.",
   },
   robots: {
     index: true,

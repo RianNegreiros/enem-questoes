@@ -36,7 +36,19 @@ export default function Image() {
         }}>
           <div style={{ fontSize: 68, fontWeight: 'bold', marginBottom: 16 }}>Questões do ENEM</div>
           <div style={{ fontSize: 36, textAlign: 'center', maxWidth: '80%', opacity: 0.9 }}>
-            Prepare-se para o vestibular com questões de provas anteriores
+            Banco de questões 100% GRATUITO e ILIMITADO
+          </div>
+          <div style={{
+            fontSize: 24,
+            textAlign: 'center',
+            maxWidth: '80%',
+            opacity: 0.8,
+            marginTop: 16,
+            padding: '8px 16px',
+            backgroundColor: 'rgba(0, 255, 0, 0.2)',
+            borderRadius: 8,
+          }}>
+            Estude sem pagar nada e sem restrições
           </div>
         </div>
       </div>
