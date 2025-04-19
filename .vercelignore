@@ -25,4 +25,9 @@ dist
 README.md
 LICENSE
 TODO.md
-*.md 
+*.md
+
+# linting and formatting configurations
+.eslintrc.json
+.prettierrc
+.prettierignore 

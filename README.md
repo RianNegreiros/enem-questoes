@@ -6,6 +6,8 @@
 ![Tailwind](https://img.shields.io/badge/Tailwind-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white)
+![Prettier](https://img.shields.io/badge/Prettier-F7B93E?style=for-the-badge&logo=prettier&logoColor=black)
 
 ## Sobre
 
@@ -76,4 +78,4 @@ Este projeto está licenciado sob a licença GPL 2.0.
 
 ## Agradecimentos
 
-- [yunger7](https://github.com/yunger7) pelo desenvolvimento da enem-api que alimenta este projeto.
+- [yunger7](https://github.com/yunger7) pelo desenvolvimento da enem-api usada neste projeto.
