@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
 import {
   LoginLink,
   LogoutLink,
   RegisterLink,
-  useKindeBrowserClient
-} from "@kinde-oss/kinde-auth-nextjs";
-import { Button } from "@/components/ui/button";
+  useKindeBrowserClient,
+} from '@kinde-oss/kinde-auth-nextjs';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,10 +14,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar } from "@/components/ui/avatar";
-import Link from "next/link";
-import { History } from "lucide-react";
+} from '@/components/ui/dropdown-menu';
+import { Avatar } from '@/components/ui/avatar';
+import Link from 'next/link';
+import { History } from 'lucide-react';
 
 export function LoginButton() {
   return (
@@ -47,15 +47,13 @@ export function UserButton() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar
-            src={user.picture ?? ""}
-            name={user.given_name?.[0] || user.family_name?.[0] || ""}
+            src={user.picture ?? ''}
+            name={user.given_name?.[0] || user.family_name?.[0] || ''}
           />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>
-          {user.email || user.given_name}
-        </DropdownMenuLabel>
+        <DropdownMenuLabel>{user.email || user.given_name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/history" className="flex items-center gap-2">
@@ -69,4 +67,4 @@ export function UserButton() {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-} 
+}

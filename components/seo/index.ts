@@ -1,5 +1,5 @@
 export {
   StructuredData,
   getWebsiteStructuredData,
-  getEducationalAppStructuredData
-} from './StructuredData'; 
+  getEducationalAppStructuredData,
+} from './StructuredData';
