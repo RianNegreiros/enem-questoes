@@ -7,7 +7,7 @@
 ## Funcionalidades de Usuário
 
 - [ ] **Criar perfil de usuário**
-  - [ ] Adicionar página de perfil com estatísticas
+  - [x] Adicionar página de perfil com estatísticas
 
 ## Comunidade
 
