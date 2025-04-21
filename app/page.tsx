@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   Card,
@@ -99,6 +100,8 @@ export default function Home() {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
   const { history, addToHistory } = useUserHistory()
   const { user } = useKindeBrowserClient()
+  const searchParams = useSearchParams()
+  const router = useRouter()
 
   // State for responsive pagination
   const [maxVisiblePages, setMaxVisiblePages] = useState(5)
@@ -109,14 +112,18 @@ export default function Home() {
   ]
   const [availableYears, setAvailableYears] = useState<number[]>(defaultYears)
 
-  // Initialize with the first year in the list
-  const [selectedYear, setSelectedYear] = useState<string>(defaultYears[0].toString())
-  const [currentPage, setCurrentPage] = useState(1)
+  // Initialize with URL params or defaults
+  const initialYear = searchParams.get('year') || defaultYears[0].toString()
+  const initialPage = searchParams.get('page') ? parseInt(searchParams.get('page')!) : 1
+  const initialTab = searchParams.get('tab') || 'all'
+
+  const [selectedYear, setSelectedYear] = useState<string>(initialYear)
+  const [currentPage, setCurrentPage] = useState(initialPage)
   const [questions, setQuestions] = useState<Question[]>([])
   const [loading, setLoading] = useState(true)
   const [totalQuestions, setTotalQuestions] = useState(0)
   const [answerSaving, setAnswerSaving] = useState<{ [key: string]: boolean }>({})
-  const [activeTab, setActiveTab] = useState('all')
+  const [activeTab, setActiveTab] = useState(initialTab)
 
   // Track user answers
   const [userAnswers, setUserAnswers] = useState<UserAnswers>({})
@@ -250,16 +257,105 @@ export default function Home() {
   // Calculate the total pages
   const totalPages = Math.ceil(totalQuestions / questionsPerPage)
 
-  // Function to change page
+  // Function to change page with URL update
   const changePage = (page: number) => {
     setCurrentPage(page)
     window.scrollTo({ top: 0, behavior: 'smooth' })
 
+    // Update URL with new page parameter
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('page', page.toString())
+    params.set('year', selectedYear)
+    params.set('tab', activeTab)
+
+    // Save to localStorage for persistence
+    try {
+      localStorage.setItem(
+        'paginationState',
+        JSON.stringify({
+          page: page.toString(),
+          year: selectedYear,
+          tab: activeTab,
+        })
+      )
+    } catch (error) {
+      console.error('Failed to save pagination state to localStorage:', error)
+    }
+
+    router.push(`/?${params.toString()}`)
+
     // If we're on a filtered tab and changing pages, reset to 'all' to avoid confusion
     if (activeTab !== 'all') {
       setActiveTab('all')
+      params.set('tab', 'all')
+
+      // Update localStorage
+      try {
+        localStorage.setItem(
+          'paginationState',
+          JSON.stringify({
+            page: page.toString(),
+            year: selectedYear,
+            tab: 'all',
+          })
+        )
+      } catch (error) {
+        console.error('Failed to save pagination state to localStorage:', error)
+      }
+
+      router.push(`/?${params.toString()}`)
     }
   }
+
+  // Update URL when year changes
+  useEffect(() => {
+    if (selectedYear) {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set('year', selectedYear)
+      params.set('page', '1') // Reset to page 1 when year changes
+      params.set('tab', activeTab)
+
+      // Save to localStorage
+      try {
+        localStorage.setItem(
+          'paginationState',
+          JSON.stringify({
+            page: '1',
+            year: selectedYear,
+            tab: activeTab,
+          })
+        )
+      } catch (error) {
+        console.error('Failed to save pagination state to localStorage:', error)
+      }
+
+      router.push(`/?${params.toString()}`)
+    }
+  }, [selectedYear])
+
+  // Update URL when tab changes
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('tab', activeTab)
+    params.set('year', selectedYear)
+    params.set('page', currentPage.toString())
+
+    // Save to localStorage
+    try {
+      localStorage.setItem(
+        'paginationState',
+        JSON.stringify({
+          page: currentPage.toString(),
+          year: selectedYear,
+          tab: activeTab,
+        })
+      )
+    } catch (error) {
+      console.error('Failed to save pagination state to localStorage:', error)
+    }
+
+    router.push(`/?${params.toString()}`)
+  }, [activeTab])
 
   // Handle answer selection
   const handleAnswerSelect = (questionId: string, letter: string) => {

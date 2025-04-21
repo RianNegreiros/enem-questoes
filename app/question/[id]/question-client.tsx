@@ -107,6 +107,25 @@ export default function QuestionClient({
   const { user } = useKindeBrowserClient()
   const { toast } = useToast()
 
+  // Get saved pagination state from localStorage when component mounts
+  const [paginationState, setPaginationState] = useState<{
+    page?: string
+    year?: string
+    tab?: string
+  }>({})
+
+  useEffect(() => {
+    // Try to load pagination state from localStorage
+    try {
+      const savedState = localStorage.getItem('paginationState')
+      if (savedState) {
+        setPaginationState(JSON.parse(savedState))
+      }
+    } catch (error) {
+      console.error('Failed to load pagination state from localStorage:', error)
+    }
+  }, [])
+
   // Check if user has previously answered this question (only if logged in)
   const previousAnswer = user ? history?.find(h => h.questionId === questionId) : null
 
@@ -267,7 +286,11 @@ export default function QuestionClient({
             <CardContent className="space-y-4">
               <div className="pt-2">
                 <Link
-                  href="/"
+                  href={`/?${new URLSearchParams({
+                    year: paginationState.year || question.year.toString(),
+                    page: paginationState.page || '1',
+                    tab: paginationState.tab || 'all',
+                  }).toString()}`}
                   className="flex items-center text-sm text-emerald-600 hover:text-emerald-700 dark:text-emerald-500 dark:hover:text-emerald-400 transition-colors"
                 >
                   <Home className="w-4 h-4 mr-2" />
