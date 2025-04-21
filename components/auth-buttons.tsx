@@ -18,19 +18,26 @@ import {
 import { Avatar } from '@/components/ui/avatar'
 import Link from 'next/link'
 import { History } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
-export function LoginButton() {
+interface AuthButtonProps {
+  className?: string
+}
+
+export function LoginButton({ className }: AuthButtonProps) {
   return (
     <LoginLink>
-      <Button variant="outline">Entrar</Button>
+      <Button variant="outline" className={className}>
+        Entrar
+      </Button>
     </LoginLink>
   )
 }
 
-export function RegisterButton() {
+export function RegisterButton({ className }: AuthButtonProps) {
   return (
     <RegisterLink>
-      <Button>Cadastrar</Button>
+      <Button className={className}>Cadastrar</Button>
     </RegisterLink>
   )
 }

@@ -7,13 +7,14 @@ import { KindeProvider } from '@/components/kinde-provider'
 import { Navbar } from '@/components/navbar'
 import { UserHistoryProvider } from '@/context/user-history-context'
 import { Analytics } from '@vercel/analytics/react'
+import { Toaster } from '@/components/ui/toaster'
 
 const inter = Inter({ subsets: ['latin'] })
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
 export const metadata: Metadata = {
-  title: 'Questões do ENEM | Banco de Questões Gratuito e Ilimitado',
+  title: 'Questões do ENEM | Banco de Questões Gratuito',
   description:
     'Acesse milhares de questões do ENEM totalmente GRÁTIS e sem limite de uso. Banco completo de questões de provas anteriores do ENEM para estudar online sem pagar nada.',
   keywords:
@@ -88,6 +89,7 @@ export default function RootLayout({
             </UserHistoryProvider>
           </ThemeProvider>
         </KindeProvider>
+        <Toaster />
         <Analytics />
       </body>
     </html>

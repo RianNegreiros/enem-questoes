@@ -2,7 +2,7 @@ import { withAuth } from '@kinde-oss/kinde-auth-nextjs/middleware'
 import { NextRequest, NextResponse } from 'next/server'
 
 export default function middleware(req: NextRequest) {
-  const publicPaths = ['/', '/api/(.*)']
+  const publicPaths = ['/', '/question/(.*)', '/api/(.*)']
   const isPublicPath = publicPaths.some(path => {
     if (path === '/') return req.nextUrl.pathname === '/'
     return new RegExp(`^${path}$`).test(req.nextUrl.pathname)
