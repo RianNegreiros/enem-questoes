@@ -9,6 +9,7 @@ import {
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { StructuredData, getQuestionStructuredData } from '@/components/seo'
 
 // Import the client component
 import QuestionClient from './question-client'
@@ -207,6 +208,20 @@ export default async function QuestionPage({ params }: { params: { id: string } 
     )
   }
 
-  // Render the client component with the question data
-  return <QuestionClient question={question} questionId={id} />
+  // Add structured data for this specific question
+  const questionStructuredData = getQuestionStructuredData({
+    id,
+    year: parseInt(year),
+    index: question.index,
+    question: question.title,
+    subject: question.discipline,
+    correctAnswer: question.correctAlternative,
+  })
+
+  return (
+    <>
+      <StructuredData data={questionStructuredData} id="question-structured-data" />
+      <QuestionClient question={question} questionId={id} />
+    </>
+  )
 }
