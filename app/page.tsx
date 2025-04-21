@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -95,7 +95,8 @@ const MarkdownContent = ({ content }: { content: string }) => {
   )
 }
 
-export default function Home() {
+// Wrapper component that uses searchParams
+function HomeContent() {
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
   const { history, addToHistory } = useUserHistory()
@@ -967,5 +968,14 @@ export default function Home() {
         </div>
       </div>
     </div>
+  )
+}
+
+// Main exported component with Suspense
+export default function Home() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HomeContent />
+    </Suspense>
   )
 }
