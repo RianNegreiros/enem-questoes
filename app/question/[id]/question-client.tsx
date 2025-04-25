@@ -5,8 +5,6 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import {
   ArrowLeft,
@@ -16,8 +14,8 @@ import {
   Home,
   Share2,
   BookOpen,
-  Clock,
-  Award,
+  Check,
+  X,
   ChevronRight,
 } from 'lucide-react'
 import Link from 'next/link'
@@ -61,12 +59,12 @@ const MarkdownContent = ({ content }: { content: string }) => {
       rehypePlugins={[rehypeKatex]}
       components={{
         p: ({ node, ...props }: any) => (
-          <p className="prose prose-sm dark:prose-invert max-w-none break-words mb-4" {...props} />
+          <p className="prose prose-sm dark:prose-invert max-w-none break-words" {...props} />
         ),
         img: ({ node, alt, ...props }: any) => (
           <img
             alt={alt || 'Imagem da questão'}
-            className="max-w-full h-auto my-4 rounded-md"
+            className="max-w-full h-auto my-2 rounded-md border"
             loading="lazy"
             {...props}
           />
@@ -257,20 +255,6 @@ export default function QuestionClient({
       })
   }
 
-  // Calculate progress for the current year
-  const calculateProgress = () => {
-    if (!user || !history) return 0
-
-    const yearQuestions = history.filter(h => h.year === question.year)
-    const correctAnswers = yearQuestions.filter(h => h.isCorrect).length
-
-    // Assuming there are typically 90 questions per year in ENEM
-    // This is a placeholder - you might want to get the actual count from your database
-    const totalQuestions = 90
-
-    return Math.round((correctAnswers / totalQuestions) * 100)
-  }
-
   return (
     <div className="container mx-auto py-6 px-4 max-w-6xl">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -362,7 +346,6 @@ export default function QuestionClient({
                     {question.discipline && <Badge variant="outline">{question.discipline}</Badge>}
                     {question.language && <Badge variant="outline">{question.language}</Badge>}
                   </div>
-                  <CardTitle className="text-xl font-bold">ENEM {question.year}</CardTitle>
                 </div>
               </div>
             </CardHeader>
@@ -408,95 +391,71 @@ export default function QuestionClient({
                 </p>
               </div>
 
-              <RadioGroup
-                value={selectedLetter || ''}
-                onValueChange={(value: string) => {
-                  if (!verified) {
-                    handleAnswerSelect(value)
-                  }
-                }}
-                className="space-y-4"
-                disabled={verified}
-              >
-                {question.alternatives.map(alt => (
-                  <div
-                    key={alt.letter}
-                    className={`
-                      border rounded-lg p-4 transition-all
-                      ${
-                        verified && alt.letter === question.correctAlternative
-                          ? 'bg-green-50 border-green-300 dark:bg-green-950/30 dark:border-green-700 ring-1 ring-green-500'
-                          : ''
-                      }
-                      ${
-                        verified &&
-                        alt.letter === selectedLetter &&
-                        alt.letter !== question.correctAlternative
-                          ? 'bg-red-50 border-red-300 dark:bg-red-950/30 dark:border-red-700 ring-1 ring-red-500'
-                          : ''
-                      }
-                      ${
-                        !verified && selectedLetter === alt.letter
-                          ? 'bg-gray-50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-700'
-                          : ''
-                      }
-                      ${verified ? '' : 'hover:bg-gray-50 dark:hover:bg-gray-900/50 hover:border-gray-300 dark:hover:border-gray-700 cursor-pointer'}
+              {/* Updated alternatives section to match the first code's styling */}
+              <div className="space-y-4">
+                {question.alternatives.map(alternative => {
+                  // Determine the state of this alternative
+                  const isSelected = selectedLetter === alternative.letter
+                  const isCorrectAfterCheck = verified && alternative.isCorrect
+                  const isIncorrectSelection = verified && isSelected && !alternative.isCorrect
+
+                  // Highlight if this was the previous answer
+                  const isPreviouslyAnswered =
+                    previousAnswer && alternative.letter === previousAnswer.selectedAnswer
+                  const isPreviouslyCorrect = isPreviouslyAnswered && previousAnswer.isCorrect
+
+                  return (
+                    <div
+                      key={alternative.letter}
+                      className={`flex items-start gap-3 p-3 text-sm rounded-lg cursor-pointer transition-all
+                      ${isSelected ? 'bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50 border border-transparent'}
+                      ${isCorrectAfterCheck ? 'bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800' : ''}
+                      ${isIncorrectSelection ? 'bg-rose-50 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800' : ''}
+                      ${isPreviouslyAnswered && !selectedLetter ? (isPreviouslyCorrect ? 'bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900' : 'bg-rose-50/50 dark:bg-rose-900/10 border border-rose-100 dark:border-rose-900') : ''}
+                      ${verified ? 'cursor-default' : 'cursor-pointer'}
                     `}
-                    onClick={() => {
-                      if (!verified) {
-                        handleAnswerSelect(alt.letter)
-                      }
-                    }}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="mt-1">
-                        <RadioGroupItem
-                          value={alt.letter}
-                          id={`alternativa-${alt.letter}`}
-                          disabled={verified}
-                          className={`
-                            ${verified && alt.letter === question.correctAlternative ? 'text-green-500 border-green-500' : ''}
-                            ${verified && alt.letter === selectedLetter && alt.letter !== question.correctAlternative ? 'text-red-500 border-red-500' : ''}
-                          `}
-                        />
-                      </div>
-                      <Label
-                        htmlFor={`alternativa-${alt.letter}`}
-                        className="flex-grow cursor-pointer"
+                      onClick={() => !verified && handleAnswerSelect(alternative.letter)}
+                    >
+                      <div
+                        className={`flex items-center justify-center h-6 w-6 rounded-full shrink-0 mt-0.5
+                        ${isSelected ? 'bg-emerald-500 text-white border-2 border-emerald-500' : 'border-2 border-slate-300 dark:border-slate-600'}
+                        ${isCorrectAfterCheck ? 'bg-emerald-500 text-white border-emerald-500' : ''}
+                        ${isIncorrectSelection ? 'bg-rose-500 text-white border-rose-500' : ''}
+                        `}
                       >
-                        <div className="flex">
-                          <span className="font-medium inline-block min-w-[1.5rem] flex-shrink-0">
-                            {alt.letter})
+                        {isSelected && <Check className="h-3.5 w-3.5" />}
+                        {!isSelected && (
+                          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                            {alternative.letter}
                           </span>
-                          <div className="flex-grow">
-                            <MarkdownContent content={alt.text} />
+                        )}
+                      </div>
+
+                      <div className="flex-1">
+                        <div className="flex">
+                          <div className="flex-1">
+                            <MarkdownContent content={alternative.text} />
                           </div>
                         </div>
-                        {alt.file && (
-                          <div className="mt-2 ml-[1.5rem]">
-                            <img
-                              src={alt.file || '/placeholder.svg'}
-                              alt={`Imagem da alternativa ${alt.letter}`}
-                              className="max-w-full h-auto rounded"
-                              loading="lazy"
-                            />
-                          </div>
-                        )}
-                      </Label>
 
-                      {verified && alt.letter === question.correctAlternative && (
-                        <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-1" />
+                        {alternative.file && (
+                          <img
+                            src={alternative.file || '/placeholder.svg'}
+                            alt={`Imagem da alternativa ${alternative.letter}`}
+                            className="max-w-full h-auto mt-2 rounded-md border"
+                            loading="lazy"
+                          />
+                        )}
+                      </div>
+
+                      {isCorrectAfterCheck && (
+                        <Check className="h-5 w-5 text-emerald-500 shrink-0" />
                       )}
-
-                      {verified &&
-                        alt.letter === selectedLetter &&
-                        alt.letter !== question.correctAlternative && (
-                          <XCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-1" />
-                        )}
+                      {isIncorrectSelection && <X className="h-5 w-5 text-rose-500 shrink-0" />}
                     </div>
-                  </div>
-                ))}
-              </RadioGroup>
+                  )
+                })}
+              </div>
 
               {verified && (
                 <Alert
@@ -546,8 +505,17 @@ export default function QuestionClient({
                   disabled={!selectedLetter || verified || answerSaving}
                   className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
                 >
-                  {answerSaving ? 'Salvando...' : 'Verificar resposta'}
-                  <ChevronRight className="w-4 h-4" />
+                  {answerSaving ? (
+                    <span className="flex items-center gap-2">
+                      <span className="h-3 w-3 rounded-full border-2 border-t-transparent border-current animate-spin"></span>
+                      Salvando...
+                    </span>
+                  ) : (
+                    <>
+                      Verificar
+                      <ChevronRight className="w-4 h-4" />
+                    </>
+                  )}
                 </Button>
               ) : (
                 <Button
