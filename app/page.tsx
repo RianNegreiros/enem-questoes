@@ -39,11 +39,6 @@ import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
-import {
-  StructuredData,
-  getEducationalAppStructuredData,
-  getWebsiteStructuredData,
-} from '@/components/seo'
 import { AuthCTA } from '@/components/auth-cta'
 import { useUserHistory } from '@/context/user-history-context'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
@@ -85,7 +80,7 @@ const MarkdownContent = ({ content }: { content: string }) => {
       remarkPlugins={[remarkGfm, remarkMath]}
       rehypePlugins={[rehypeKatex]}
       components={{
-        p: ({ node, ...props }) => (
+        p: ({ ...props }) => (
           <p className="prose prose-sm dark:prose-invert max-w-none break-words" {...props} />
         ),
       }}
@@ -98,7 +93,6 @@ const MarkdownContent = ({ content }: { content: string }) => {
 // Wrapper component that uses searchParams
 function HomeContent() {
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
   const { history, addToHistory } = useUserHistory()
   const { user } = useKindeBrowserClient()
   const searchParams = useSearchParams()
@@ -164,7 +158,7 @@ function HomeContent() {
           // Check if data has the expected structure
           if (data && Array.isArray(data)) {
             // If the API returns an array directly
-            const years = data.map((exam: any) => exam.year).filter(Boolean)
+            const years = data.map((exam: { year: number }) => exam.year).filter(Boolean)
             if (years.length > 0) {
               const sortedYears = years.sort((a: number, b: number) => b - a)
               setAvailableYears(sortedYears)
@@ -175,7 +169,7 @@ function HomeContent() {
             }
           } else if (data && data.exams && Array.isArray(data.exams)) {
             // If the API returns an object with exams array
-            const years = data.exams.map((exam: any) => exam.year).filter(Boolean)
+            const years = data.exams.map((exam: { year: number }) => exam.year).filter(Boolean)
             if (years.length > 0) {
               const sortedYears = years.sort((a: number, b: number) => b - a)
               setAvailableYears(sortedYears)
@@ -332,7 +326,7 @@ function HomeContent() {
 
       router.push(`/?${params.toString()}`)
     }
-  }, [selectedYear])
+  }, [selectedYear, activeTab, router, searchParams])
 
   // Update URL when tab changes
   useEffect(() => {
@@ -356,7 +350,7 @@ function HomeContent() {
     }
 
     router.push(`/?${params.toString()}`)
-  }, [activeTab])
+  }, [activeTab, currentPage, selectedYear, router, searchParams])
 
   // Handle answer selection
   const handleAnswerSelect = (questionId: string, letter: string) => {
@@ -466,7 +460,7 @@ function HomeContent() {
       console.log('All questions on this page are answered, loading next page...')
       changePage(currentPage + 1)
     }
-  }, [activeTab, loading, questions, filteredQuestions, currentPage, totalPages])
+  }, [activeTab, loading, questions, filteredQuestions, currentPage, totalPages, changePage])
 
   // Debug logging
   useEffect(() => {
@@ -504,12 +498,6 @@ function HomeContent() {
           </div>
 
           <AuthCTA />
-
-          <StructuredData
-            data={getEducationalAppStructuredData(appUrl)}
-            id="educational-app-data"
-          />
-          <StructuredData data={getWebsiteStructuredData(appUrl)} id="website-data" />
 
           {/* Filter and info section */}
           <div className="mb-8 rounded-xl bg-white dark:bg-slate-900 shadow-sm border p-6">

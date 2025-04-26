@@ -8,7 +8,6 @@ import {
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
 import { StructuredData, getQuestionStructuredData } from '@/components/seo'
 
 // Import the client component

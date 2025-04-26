@@ -58,10 +58,10 @@ const MarkdownContent = ({ content }: { content: string }) => {
       remarkPlugins={[remarkGfm, remarkMath]}
       rehypePlugins={[rehypeKatex]}
       components={{
-        p: ({ node, ...props }: any) => (
+        p: ({ ...props }: React.ComponentPropsWithoutRef<'p'>) => (
           <p className="prose prose-sm dark:prose-invert max-w-none break-words" {...props} />
         ),
-        img: ({ node, alt, ...props }: any) => (
+        img: ({ alt, ...props }: React.ComponentPropsWithoutRef<'img'>) => (
           <img
             alt={alt || 'Imagem da questão'}
             className="max-w-full h-auto my-2 rounded-md border"
@@ -69,7 +69,7 @@ const MarkdownContent = ({ content }: { content: string }) => {
             {...props}
           />
         ),
-        table: ({ node, ...props }: any) => (
+        table: ({ ...props }: React.ComponentPropsWithoutRef<'table'>) => (
           <div className="overflow-x-auto">
             <table
               className="w-full border-collapse border border-gray-300 dark:border-gray-700"
@@ -77,13 +77,13 @@ const MarkdownContent = ({ content }: { content: string }) => {
             />
           </div>
         ),
-        th: ({ node, ...props }: any) => (
+        th: ({ ...props }: React.ComponentPropsWithoutRef<'th'>) => (
           <th
             className="border border-gray-300 dark:border-gray-700 px-4 py-2 bg-gray-100 dark:bg-gray-800"
             {...props}
           />
         ),
-        td: ({ node, ...props }: any) => (
+        td: ({ ...props }: React.ComponentPropsWithoutRef<'td'>) => (
           <td className="border border-gray-300 dark:border-gray-700 px-4 py-2" {...props} />
         ),
       }}
@@ -178,8 +178,8 @@ export default function QuestionClient({
           correctAnswer: question.correctAlternative,
           isCorrect: correct,
         })
-      } catch (error) {
-        console.error('Failed to save answer to history:', error)
+      } catch (err) {
+        console.error('Failed to save answer to history:', err)
       } finally {
         setAnswerSaving(false)
       }

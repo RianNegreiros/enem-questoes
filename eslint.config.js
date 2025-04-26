@@ -44,7 +44,7 @@ export default [
       '@typescript-eslint/no-unused-vars': 'warn',
       'no-unused-vars': 'off',
       'react/react-in-jsx-scope': 'off',
-      'no-console': 'warn',
+      'no-console': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
     },
     settings: {

@@ -1,12 +1,12 @@
 import { PrismaClient } from '@prisma/client'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 
 // Inicializar cliente Prisma diretamente aqui em vez de importar
 const prisma = new PrismaClient()
 
 // GET - Retrieve user's answer history
-export async function GET(req: NextRequest) {
+export async function GET() {
   const { getUser } = getKindeServerSession()
   const user = await getUser()
 
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
 }
 
 // DELETE - Clear user's answer history
-export async function DELETE(req: NextRequest) {
+export async function DELETE() {
   const { getUser } = getKindeServerSession()
   const user = await getUser()
 

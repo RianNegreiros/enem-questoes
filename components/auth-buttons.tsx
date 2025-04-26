@@ -18,7 +18,6 @@ import {
 import { Avatar } from '@/components/ui/avatar'
 import Link from 'next/link'
 import { History } from 'lucide-react'
-import { cn } from '@/lib/utils'
 
 interface AuthButtonProps {
   className?: string
