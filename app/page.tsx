@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect, Suspense, useCallback } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -42,6 +42,11 @@ import 'katex/dist/katex.min.css'
 import { AuthCTA } from '@/components/auth-cta'
 import { useUserHistory } from '@/context/user-history-context'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import {
+  StructuredData,
+  getWebsiteStructuredData,
+  getEducationalAppStructuredData,
+} from '@/components/seo'
 
 // Define types for the API responses
 interface QuestionAlternative {
@@ -253,45 +258,25 @@ function HomeContent() {
   const totalPages = Math.ceil(totalQuestions / questionsPerPage)
 
   // Function to change page with URL update
-  const changePage = (page: number) => {
-    setCurrentPage(page)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+  const changePage = useCallback(
+    (page: number) => {
+      setCurrentPage(page)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
 
-    // Update URL with new page parameter
-    const params = new URLSearchParams(searchParams.toString())
-    params.set('page', page.toString())
-    params.set('year', selectedYear)
-    params.set('tab', activeTab)
+      // Update URL with new page parameter
+      const params = new URLSearchParams(searchParams.toString())
+      params.set('page', page.toString())
+      params.set('year', selectedYear)
+      params.set('tab', activeTab)
 
-    // Save to localStorage for persistence
-    try {
-      localStorage.setItem(
-        'paginationState',
-        JSON.stringify({
-          page: page.toString(),
-          year: selectedYear,
-          tab: activeTab,
-        })
-      )
-    } catch (error) {
-      console.error('Failed to save pagination state to localStorage:', error)
-    }
-
-    router.push(`/?${params.toString()}`)
-
-    // If we're on a filtered tab and changing pages, reset to 'all' to avoid confusion
-    if (activeTab !== 'all') {
-      setActiveTab('all')
-      params.set('tab', 'all')
-
-      // Update localStorage
+      // Save to localStorage for persistence
       try {
         localStorage.setItem(
           'paginationState',
           JSON.stringify({
             page: page.toString(),
             year: selectedYear,
-            tab: 'all',
+            tab: activeTab,
           })
         )
       } catch (error) {
@@ -299,8 +284,31 @@ function HomeContent() {
       }
 
       router.push(`/?${params.toString()}`)
-    }
-  }
+
+      // If we're on a filtered tab and changing pages, reset to 'all' to avoid confusion
+      if (activeTab !== 'all') {
+        setActiveTab('all')
+        params.set('tab', 'all')
+
+        // Update localStorage
+        try {
+          localStorage.setItem(
+            'paginationState',
+            JSON.stringify({
+              page: page.toString(),
+              year: selectedYear,
+              tab: 'all',
+            })
+          )
+        } catch (error) {
+          console.error('Failed to save pagination state to localStorage:', error)
+        }
+
+        router.push(`/?${params.toString()}`)
+      }
+    },
+    [activeTab, selectedYear, searchParams, router, setActiveTab, setCurrentPage]
+  )
 
   // Update URL when year changes
   useEffect(() => {
@@ -963,7 +971,11 @@ function HomeContent() {
 export default function Home() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <HomeContent />
+      <>
+        <StructuredData data={getWebsiteStructuredData()} id="website-structured-data" />
+        <StructuredData data={getEducationalAppStructuredData()} id="app-structured-data" />
+        <HomeContent />
+      </>
     </Suspense>
   )
 }

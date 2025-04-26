@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { NextResponse } from 'next/server'
 
-// Inicializar cliente Prisma diretamente aqui em vez de importar
 const prisma = new PrismaClient()
 
 // GET - Retrieve user's answer history

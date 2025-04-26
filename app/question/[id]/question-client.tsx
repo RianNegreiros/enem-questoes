@@ -213,9 +213,9 @@ export default function QuestionClient({
 
   // Share question with Web Share API if available, fallback to clipboard
   const shareQuestion = async () => {
-    const url = window.location.href
     const title = `Questão ${question.index} - ENEM ${question.year}`
-    const text = `Pratique esta questão do ENEM: ${title}`
+    const text = `Pratique com esta questão do ENEM ${question.year}`
+    const url = window.location.href
 
     if (navigator.share) {
       try {
@@ -224,7 +224,7 @@ export default function QuestionClient({
           text,
           url,
         })
-      } catch (error) {
+      } catch (_) {
         // Fallback to clipboard if share fails or was cancelled
         copyToClipboard(url)
       }
