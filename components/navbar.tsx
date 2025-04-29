@@ -64,7 +64,7 @@ export function Navbar() {
             )}
           </div>
 
-          <ThemeToggle />
+          {isLoading || !user ? <ThemeToggle /> : null}
 
           <Sheet>
             <SheetTrigger asChild>
@@ -105,6 +105,9 @@ export function Navbar() {
                     <div className="flex flex-col gap-2">
                       <LoginButton className="w-full" />
                       <RegisterButton className="w-full" />
+                      <div className="mt-2">
+                        <ThemeToggle />
+                      </div>
                     </div>
                   )}
                   {user && (

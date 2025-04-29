@@ -17,7 +17,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar } from '@/components/ui/avatar'
 import Link from 'next/link'
-import { History } from 'lucide-react'
+import { History, Moon, Sun, Monitor } from 'lucide-react'
+import { useTheme } from 'next-themes'
 
 interface AuthButtonProps {
   className?: string
@@ -43,6 +44,7 @@ export function RegisterButton({ className }: AuthButtonProps) {
 
 export function UserButton() {
   const { user, isLoading } = useKindeBrowserClient()
+  const { setTheme } = useTheme()
 
   if (isLoading || !user) {
     return null
@@ -67,6 +69,20 @@ export function UserButton() {
             <span>Histórico</span>
           </Link>
         </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => setTheme('light')} className="flex items-center gap-2">
+          <Sun className="h-4 w-4" />
+          <span>Tema Claro</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('dark')} className="flex items-center gap-2">
+          <Moon className="h-4 w-4" />
+          <span>Tema Escuro</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('system')} className="flex items-center gap-2">
+          <Monitor className="h-4 w-4" />
+          <span>Sistema</span>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <LogoutLink>Sair</LogoutLink>
         </DropdownMenuItem>
